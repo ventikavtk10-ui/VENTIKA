@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="text-align: center; margin-bottom: 40px;">
+    <h2 style="font-size: 36px; margin-bottom: 10px; color: var(--gold);">Colección Exclusiva</h2>
+    <p style="color: var(--text-gray); font-size: 15px;">Alta costura y prendas de diseño único.</p>
+</div>
+
+<div class="filters">
+    <a href="{{ url_for('index') }}" class="filter-btn {% if not categoria_actual %}active{% endif %}">Todos</a>
+    <a href="{{ url_for('index', categoria='camisas') }}" class="filter-btn {% if categoria_actual == 'camisas' %}active{% endif %}">Camisas</a>
+    <a href="{{ url_for('index', categoria='pantalones') }}" class="filter-btn {% if categoria_actual == 'pantalones' %}active{% endif %}">Pantalones</a>
+    <a href="{{ url_for('index', categoria='chaquetas') }}" class="filter-btn {% if categoria_actual == 'chaquetas' %}active{% endif %}">Chaquetas</a>
+</div>
+
+<div class="products-grid">
+    {% for product in products %}
+    <div class="product-card">
+        <img src="{{ product.image_filename if product.image_filename.startswith('http') else url_for('static', filename='uploads/' + product.image_filename) }}" alt="{{ product.title }}" class="product-img">
+        <div class="product-info">
+            <div>
+                <h3 class="product-title">{{ product.title }}</h3>
+                <div class="product-price">${{ "%.2f"|format(product.price) }} USD</div>
+            </div>
+            <a href="{{ url_for('detalle_producto', id=product.id) }}" class="btn-outline" style="text-align: center;">Ver Pieza</a>
+        </div>
+    </div>
+    {% else %}
+    <p style="color: var(--text-gray); grid-column: 1/-1; text-align: center; padding: 40px;">No hay productos disponibles en esta categoría actualmente. Agrégalos desde el panel de Admin.</p>
+    {% endfor %}
+</div>
+{% endblock %}

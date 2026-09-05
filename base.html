@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VENTIKA | High-End Fashion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <header>
+        <a href="{{ url_for('index') }}" class="logo-container">
+            <span class="monogram">VTK</span>
+            <div class="diamond-separator">&#9670;</div>
+            <span class="brand-name">VENTIKA</span>
+        </a>
+        <nav>
+            <a href="{{ url_for('index') }}">Catálogo</a>
+            <a href="{{ url_for('ver_carrito') }}">Carrito</a>
+            <a href="{{ url_for('admin_login') }}">Admin</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="monogram" style="font-size: 18px;">VTK</div>
+            <div class="social-links">
+                <a href="https://instagram.com/ErielPresX" target="_blank">Instagram: @ErielPresX</a>
+                <a href="https://tiktok.com/@ErielPresX" target="_blank">TikTok: @ErielPresX</a>
+            </div>
+            <p class="copyright">&copy; 2026 VENTIKA. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

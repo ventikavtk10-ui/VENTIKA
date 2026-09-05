@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 style="font-size: 28px; margin-bottom: 30px; color: var(--gold);">Tu Carrito de Compras</h2>
+
+{% if items %}
+<table class="dashboard-table" style="margin-bottom: 30px;">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+            <th>Subtotal</th>
+            <th>Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in items %}
+        <tr>
+            <td>{{ item.product.title }}</td>
+            <td>${{ "%.2f"|format(item.product.price) }}</td>
+            <td>{{ item.cantidad }}</td>
+            <td style="color: var(--gold);">${{ "%.2f"|format(item.subtotal) }}</td>
+            <td><a href="{{ url_for('eliminar_carrito', id=item.product.id) }}" style="color: #ff6b6b; text-decoration: none;">Eliminar</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div style="display: flex; justify-content: space-between; align-items: center; background: var(--card-bg); padding: 25px; border: 1px solid var(--border-color); flex-wrap: wrap; gap: 15px;">
+    <div>
+        <h3 style="font-size: 20px;">Total a Pagar: <span style="color: var(--gold);">${{ "%.2f"|format(total) }} USD</span></h3>
+    </div>
+    <form action="{{ url_for('crear_checkout_session') }}" method="POST">
+        <button type="submit" class="btn-gold" style="padding: 15px 30px; font-size: 14px;">Proceder al Pago Seguro</button>
+    </form>
+</div>
+{% else %}
+<div style="text-align: center; padding: 60px; background: var(--card-bg); border: 1px solid var(--border-color);">
+    <p style="color: var(--text-gray); margin-bottom: 20px;">Tu carrito está vacío.</p>
+    <a href="{{ url_for('index') }}" class="btn-gold">Explorar Catálogo</a>
+</div>
+{% endif %}
+{% endblock %}

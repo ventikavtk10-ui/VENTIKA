@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;">
+    <h2 style="font-size: 28px; color: var(--gold);">Panel de Administración VENTIKA</h2>
+    <a href="{{ url_for('admin_logout') }}" class="btn-outline">Cerrar Sesión</a>
+</div>
+
+<!-- FORMULARIO DE AGREGAR PRODUCTO -->
+<div style="background: var(--card-bg); padding: 30px; border: 1px solid var(--border-color); margin-bottom: 40px;">
+    <h3 style="margin-bottom: 20px; color: var(--gold);">Agregar Nueva Pieza / Producto</h3>
+    <p style="color: var(--text-gray); font-size: 13px; margin-bottom: 20px;">*Tip: Si dejas el título o la descripción en blanco, se generarán automáticamente.</p>
+
+    <form method="POST" enctype="multipart/form-data">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="form-group">
+                <label>Título del Producto</label>
+                <input type="text" name="title" class="form-control" placeholder="Ej: Camisa de Seda Negra">
+            </div>
+            <div class="form-group">
+                <label>Precio ($ USD)</label>
+                <input type="number" step="0.01" name="price" class="form-control" required placeholder="89.99">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Descripción</label>
+            <textarea name="description" class="form-control" rows="3" placeholder="Detalles de la prenda..."></textarea>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+            <div class="form-group">
+                <label>Categoría</label>
+                <select name="category" class="form-control">
+                    <option value="camisas">Camisas</option>
+                    <option value="pantalones">Pantalones</option>
+                    <option value="chaquetas">Chaquetas</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Talla</label>
+                <input type="text" name="size" class="form-control" required placeholder="M, L, XL">
+            </div>
+            <div class="form-group">
+                <label>Stock Disponible</label>
+                <input type="number" name="stock" class="form-control" required value="10">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Imagen del Producto</label>
+            <input type="file" name="image" class="form-control" accept="image/*" required>
+        </div>
+
+        <button type="submit" class="btn-gold" style="padding: 12px 25px; margin-top: 10px;">Publicar Producto</button>
+    </form>
+</div>
+
+<!-- SINCRONIZACIÓN SHOPIFY -->
+<div style="background: var(--card-bg); padding: 30px; border: 1px solid var(--border-color); margin-bottom: 40px;">
+    <h3 style="margin-bottom: 15px; color: var(--gold);">Sincronizar con Shopify Admin API</h3>
+    <p style="color: var(--text-gray); font-size: 13px; margin-bottom: 20px;">Importa todos tus productos existentes desde tu tienda de Shopify directamente a VENTIKA.</p>
+
+    <form action="{{ url_for('sincronizar_shopify') }}" method="POST">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="form-group">
+                <label>URL de tu tienda Shopify</label>
+                <input type="text" name="shop_url" class="form-control" placeholder="tu-tienda.myshopify.com" required>
+            </div>
+            <div class="form-group">
+                <label>Admin API Access Token</label>
+                <input type="password" name="access_token" class="form-control" placeholder="shpat_xxxxxxxxxxxxxxxx" required>
+            </div>
+        </div>
+        <button type="submit" class="btn-outline" style="padding: 10px 20px; margin-top: 10px;">Sincronizar Catálogo</button>
+    </form>
+</div>
+
+<!-- LISTA DE PRODUCTOS ACTUALES -->
+<h3 style="margin-bottom: 20px;">Inventario Actual en VENTIKA</h3>
+<table class="dashboard-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Imagen</th>
+            <th>Título</th>
+            <th>Categoría</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for product in products %}
+        <tr>
+            <td>#{{ product.id }}</td>
+            <td>
+                <img src="{{ product.image_filename if product.image_filename.startswith('http') else url_for('static', filename='uploads/' + product.image_filename) }}" style="width: 45px; height: 45px; object-fit: cover; border-radius: 4px;">
+            </td>
+            <td>{{ product.title }}</td>
+            <td style="text-transform: uppercase; font-size: 12px; color: var(--gold);">{{ product.category }}</td>
+            <td>${{ "%.2f"|format(product.price) }}</td>
+            <td>{{ product.stock }}</td>
+            <td>
+                <a href="{{ url_for('admin_eliminar', id=product.id) }}" style="color: #ff6b6b; text-decoration: none; font-size: 13px;" onclick="return confirm('¿Seguro que deseas eliminar este producto?')">Eliminar</a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="7" style="text-align: center; color: var(--text-gray); padding: 30px;">No hay productos registrados en el inventario.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

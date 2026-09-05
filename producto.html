@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="product-detail-container">
+    <div>
+        <img src="{{ product.image_filename if product.image_filename.startswith('http') else url_for('static', filename='uploads/' + product.image_filename) }}" alt="{{ product.title }}" class="product-detail-img">
+    </div>
+    <div class="product-detail-info">
+        <span style="color: var(--gold); text-transform: uppercase; font-size: 12px; letter-spacing: 2px;">{{ product.category }}</span>
+        <h1>{{ product.title }}</h1>
+        <div class="price">${{ "%.2f"|format(product.price) }} USD</div>
+        <p>{{ product.description }}</p>
+
+        <div style="margin-bottom: 20px;">
+            <strong style="font-size: 13px; text-transform: uppercase; color: var(--gold);">Talla disponible:</strong>
+            <span style="background: var(--card-bg); border: 1px solid var(--border-color); padding: 5px 12px; margin-left: 10px;">{{ product.size }}</span>
+        </div>
+
+        <div style="margin-bottom: 30px;">
+            <strong style="font-size: 13px; text-transform: uppercase; color: var(--gold);">Stock:</strong>
+            <span style="color: var(--text-gray); margin-left: 10px;">{{ product.stock }} unidades</span>
+        </div>
+
+        {% if product.stock > 0 %}
+        <form action="{{ url_for('agregar_carrito', id=product.id) }}" method="POST">
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <input type="number" name="cantidad" value="1" min="1" max="{{ product.stock }}" class="form-control" style="width: 80px; text-align: center;">
+                <button type="submit" class="btn-gold" style="flex: 1; padding: 14px;">Agregar al Carrito</button>
+            </div>
+        </form>
+        {% else %}
+        <button class="btn-outline" disabled style="opacity: 0.5; cursor: not-allowed;">Agotado</button>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

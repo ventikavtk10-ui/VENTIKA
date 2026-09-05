@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="text-align: center; padding: 80px 20px; background: var(--card-bg); border: 1px solid var(--border-color);">
+    <div style="font-size: 48px; color: var(--gold); margin-bottom: 20px;">&#9670;</div>
+    <h2 style="font-size: 32px; margin-bottom: 15px;">¡Gracias por tu compra en VENTIKA!</h2>
+    <p style="color: var(--text-gray); max-width: 500px; margin: 0 auto 30px auto; line-height: 1.6;">Tu pago ha sido procesado de forma exitosa. Prepararemos tu pedido de alta costura con sumo cuidado.</p>
+    <a href="{{ url_for('index') }}" class="btn-gold">Volver al Inicio</a>
+</div>
+{% endblock %}
